@@ -8,34 +8,24 @@ const rest = new REST({ version: "10" }).setToken(TOKEN);
 (async () => {
   try {
     console.log("🧹 Limpando comandos globais...");
+    await rest.put(Routes.applicationCommands(CLIENT_ID), { body: [] });
 
-    await rest.put(
-      Routes.applicationCommands(CLIENT_ID),
-      { body: [] }
-    );
+    console.log("🧹 Limpando comandos de servidor...");
 
-    console.log("✅ Globais limpos!");
-
-    console.log("⚠️ Limpando comandos de servidores conhecidos...");
-
-    // Se não souber os IDs, esse método não pega todos automaticamente
-    // então você PRECISA apagar manualmente os principais servidores
-
-    const GUILD_IDS = [
-      // coloque aqui os servidores onde testou o bot
+    // coloque os servidores onde o bot já esteve
+    const GUILDS = [
+      // IDs aqui se tiver
     ];
 
-    for (const id of GUILD_IDS) {
-      console.log(`🧹 Limpando guild ${id}`);
-
+    for (const id of GUILDS) {
       await rest.put(
         Routes.applicationGuildCommands(CLIENT_ID, id),
         { body: [] }
       );
     }
 
-    console.log("🎉 LIMPEZA FINALIZADA!");
-  } catch (err) {
-    console.error(err);
+    console.log("✅ Tudo limpo!");
+  } catch (e) {
+    console.error(e);
   }
 })();
