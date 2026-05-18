@@ -3,9 +3,16 @@ const { SlashCommandBuilder } = require("discord.js");
 module.exports = {
   data: new SlashCommandBuilder()
     .setName("setup")
-    .setDescription("Setup do servidor"),
+    .setDescription("Configura o servidor"),
 
   async execute(interaction) {
-    await interaction.reply("✅ Setup funcionando!");
+    try {
+      await interaction.reply({
+        content: "✅ Setup funcionando!",
+        ephemeral: true
+      });
+    } catch (err) {
+      console.error(err);
+    }
   },
 };
