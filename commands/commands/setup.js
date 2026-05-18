@@ -1,10 +1,4 @@
-const {
-  SlashCommandBuilder,
-  EmbedBuilder,
-  ActionRowBuilder,
-  ButtonBuilder,
-  ButtonStyle,
-} = require("discord.js");
+const { SlashCommandBuilder, EmbedBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle } = require("discord.js");
 
 module.exports = {
   data: new SlashCommandBuilder()
@@ -12,9 +6,10 @@ module.exports = {
     .setDescription("Painel de configuração do servidor"),
 
   async execute(interaction) {
+
     const embed = new EmbedBuilder()
       .setTitle("⚙️ Setup do Servidor")
-      .setDescription("Ative ou desative sistemas abaixo:")
+      .setDescription("Ative ou desative sistemas:")
       .setColor("Blue");
 
     const row = new ActionRowBuilder().addComponents(
