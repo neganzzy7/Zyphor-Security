@@ -1,4 +1,4 @@
-const { Client, GatewayIntentBits, Collection, Events } = require("discord.js");
+const { Client, GatewayIntentBits, Collection } = require("discord.js");
 const fs = require("fs");
 
 const client = new Client({
@@ -7,7 +7,7 @@ const client = new Client({
 
 client.commands = new Collection();
 
-// carrega comandos
+// carregar comandos
 const commandFiles = fs.readdirSync("./commands").filter(f => f.endsWith(".js"));
 
 for (const file of commandFiles) {
@@ -15,24 +15,48 @@ for (const file of commandFiles) {
   client.commands.set(command.data.name, command);
 }
 
-client.once(Events.ClientReady, c => {
-  console.log(`BOT ONLINE: ${c.user.tag}`);
-});
+// interaction handler
+client.on("interactionCreate", async (interaction) => {
 
-client.on(Events.InteractionCreate, async interaction => {
-  if (!interaction.isChatInputCommand()) return;
+  // slash commands
+  if (interaction.isChatInputCommand()) {
+    const command = client.commands.get(interaction.commandName);
+    if (!command) return;
 
-  const command = client.commands.get(interaction.commandName);
-  if (!command) return;
+    try {
+      await command.execute(interaction);
+    } catch (err) {
+      console.error(err);
+      await interaction.reply({
+        content: "Erro ao executar comando",
+        ephemeral: true,
+      });
+    }
+  }
 
-  try {
-    await command.execute(interaction);
-  } catch (err) {
-    console.error(err);
-    await interaction.reply({
-      content: "Erro no comando",
-      ephemeral: true
-    });
+  // BOTÕES DO SETUP
+  if (interaction.isButton()) {
+
+    if (interaction.customId === "anti_link") {
+      return interaction.reply({
+        content: "🔗 Anti-Link alternado",
+        ephemeral: true,
+      });
+    }
+
+    if (interaction.customId === "anti_raid") {
+      return interaction.reply({
+        content: "⚔️ Anti-Raid alternado",
+        ephemeral: true,
+      });
+    }
+
+    if (interaction.customId === "lockdown") {
+      return interaction.reply({
+        content: "🔒 Lockdown ativado",
+        ephemeral: true,
+      });
+    }
   }
 });
 
