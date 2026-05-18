@@ -1,7 +1,8 @@
 const {
  Client,
  GatewayIntentBits,
- Collection
+ Collection,
+ Events
 } = require("discord.js");
 
 const fs = require("fs");
@@ -30,27 +31,35 @@ for (const file of commandFiles) {
 
 }
 
-client.once("clientReady", () => {
+client.once(Events.ClientReady, readyClient => {
 
  console.log(
-  `✅ ${client.user.tag} online!`
+  `✅ ${readyClient.user.tag} online`
  );
 
 });
 
 client.on(
- "interactionCreate",
+ Events.InteractionCreate,
  async interaction => {
 
  if (!interaction.isChatInputCommand())
  return;
 
  const command =
- client.commands.get(
+ interaction.client.commands.get(
   interaction.commandName
  );
 
- if (!command) return;
+ if (!command) {
+
+  console.error(
+   "Comando não encontrado."
+  );
+
+  return;
+
+ }
 
  try {
 
@@ -61,6 +70,25 @@ client.on(
  } catch (error) {
 
   console.error(error);
+
+  if (interaction.replied ||
+      interaction.deferred) {
+
+   await interaction.followUp({
+    content:
+    "❌ Erro ao executar comando.",
+    ephemeral: true
+   });
+
+  } else {
+
+   await interaction.reply({
+    content:
+    "❌ Erro ao executar comando.",
+    ephemeral: true
+   });
+
+  }
 
  }
 
