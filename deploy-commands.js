@@ -1,33 +1,35 @@
-console.log("TESTE ZYPHOR");
+console.log("INICIANDO");
+
 const { REST, Routes } = require("discord.js");
-const fs = require("fs");
 
-const commands = [];
+const commands = [
+  {
+    name: "ping",
+    description: "Ping do bot"
+  },
+  {
+    name: "setup",
+    description: "Setup do servidor"
+  }
+];
 
-const commandFiles = fs.readdirSync("./commands").filter(file => file.endsWith(".js"));
-
-for (const file of commandFiles) {
-
-  const command = require(`./commands/${file}`);
-
-  commands.push(command.data.toJSON());
-
-}
-
-const rest = new REST({ version: "10" }).setToken(process.env.TOKEN);
+const rest = new REST({ version: "10" })
+.setToken(process.env.TOKEN);
 
 (async () => {
 
   try {
 
-    console.log("🔄 Registrando comandos...");
+    console.log("REGISTRANDO");
 
     await rest.put(
-      Routes.applicationCommands(process.env.CLIENT_ID),
+      Routes.applicationCommands(
+        process.env.CLIENT_ID
+      ),
       { body: commands }
     );
 
-    console.log("✅ Comandos registrados!");
+    console.log("✅ COMANDOS REGISTRADOS");
 
   } catch (error) {
 
