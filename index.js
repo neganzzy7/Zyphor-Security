@@ -1,97 +1,42 @@
-const {
- Client,
- GatewayIntentBits,
- Collection,
- Events
-} = require("discord.js");
-
+const { Client, GatewayIntentBits, Collection, Events } = require("discord.js");
 const fs = require("fs");
 
 const client = new Client({
- intents: [
-  GatewayIntentBits.Guilds
- ]
+  intents: [GatewayIntentBits.Guilds],
 });
 
 client.commands = new Collection();
 
-const commandFiles = fs
-.readdirSync("./commands")
-.filter(file => file.endsWith(".js"));
+// carrega comandos
+const commandFiles = fs.readdirSync("./commands").filter(f => f.endsWith(".js"));
 
 for (const file of commandFiles) {
-
- const command =
- require(`./commands/${file}`);
-
- client.commands.set(
-  command.data.name,
-  command
- );
-
+  const command = require(`./commands/${file}`);
+  client.commands.set(command.data.name, command);
 }
 
-client.once(Events.ClientReady, readyClient => {
-
- console.log(
-  `✅ ${readyClient.user.tag} online`
- );
-
+client.once(Events.ClientReady, c => {
+  console.log(`✅ Bot online: ${c.user.tag}`);
 });
 
-client.on(
- Events.InteractionCreate,
- async interaction => {
+client.on(Events.InteractionCreate, async interaction => {
+  if (!interaction.isChatInputCommand()) return;
 
- if (!interaction.isChatInputCommand())
- return;
+  const command = client.commands.get(interaction.commandName);
+  if (!command) return;
 
- const command =
- interaction.client.commands.get(
-  interaction.commandName
- );
+  try {
+    await command.execute(interaction);
+  } catch (err) {
+    console.error(err);
 
- if (!command) {
-
-  console.error(
-   "Comando não encontrado."
-  );
-
-  return;
-
- }
-
- try {
-
-  await command.execute(
-   interaction
-  );
-
- } catch (error) {
-
-  console.error(error);
-
-  if (interaction.replied ||
-      interaction.deferred) {
-
-   await interaction.followUp({
-    content:
-    "❌ Erro ao executar comando.",
-    ephemeral: true
-   });
-
-  } else {
-
-   await interaction.reply({
-    content:
-    "❌ Erro ao executar comando.",
-    ephemeral: true
-   });
-
+    if (!interaction.replied) {
+      await interaction.reply({
+        content: "❌ Erro ao executar comando",
+        ephemeral: true,
+      });
+    }
   }
-
- }
-
 });
 
 client.login(process.env.TOKEN);
