@@ -13,10 +13,8 @@ module.exports = {
 
   async execute(interaction) {
     const embed = new EmbedBuilder()
-      .setTitle("⚙️ Painel de Setup")
-      .setDescription(
-        "Use os botões abaixo para ativar/desativar sistemas do servidor."
-      )
+      .setTitle("⚙️ Setup do Servidor")
+      .setDescription("Ative ou desative sistemas abaixo:")
       .setColor("Blue");
 
     const row = new ActionRowBuilder().addComponents(
@@ -31,9 +29,9 @@ module.exports = {
         .setStyle(ButtonStyle.Danger),
 
       new ButtonBuilder()
-        .setCustomId("admin_roles")
-        .setLabel("Admins")
-        .setStyle(ButtonStyle.Primary)
+        .setCustomId("lockdown")
+        .setLabel("Lockdown")
+        .setStyle(ButtonStyle.Secondary)
     );
 
     await interaction.reply({
