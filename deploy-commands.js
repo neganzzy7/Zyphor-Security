@@ -1,54 +1,37 @@
-const {
- REST,
- Routes
-} = require("discord.js");
-
+const { REST, Routes } = require("discord.js");
 const fs = require("fs");
 
 const commands = [];
 
-const commandFiles = fs
-.readdirSync("./commands")
-.filter(file => file.endsWith(".js"));
+const commandFiles = fs.readdirSync("./commands").filter(file => file.endsWith(".js"));
 
-for(const file of commandFiles) {
+for (const file of commandFiles) {
 
- const command =
- require(`./commands/${file}`);
+  const command = require(`./commands/${file}`);
 
- commands.push(
-  command.data.toJSON()
- );
+  commands.push(command.data.toJSON());
 
 }
 
-const rest =
- new REST({ version: "10" })
- .setToken(process.env.TOKEN);
+const rest = new REST({ version: "10" }).setToken(process.env.TOKEN);
 
 (async () => {
 
- try {
+  try {
 
-  console.log(
-   "🔄 Registrando comandos..."
-  );
+    console.log("🔄 Registrando comandos...");
 
-  await rest.put(
-   Routes.applicationCommands(
-    process.env.CLIENT_ID
-   ),
-   { body: commands }
-  );
+    await rest.put(
+      Routes.applicationCommands(process.env.CLIENT_ID),
+      { body: commands }
+    );
 
-  console.log(
-   "✅ Comandos registrados!"
-  );
+    console.log("✅ Comandos registrados!");
 
- } catch(error) {
+  } catch (error) {
 
-  console.error(error);
+    console.error(error);
 
- }
+  }
 
 })();
