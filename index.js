@@ -7,8 +7,14 @@ const client = new Client({
 
 client.commands = new Collection();
 
-// carrega comandos
-const commandFiles = fs.readdirSync("./commands").filter(f => f.endsWith(".js"));
+// carrega comandos com segurança
+let commandFiles = [];
+
+try {
+  commandFiles = fs.readdirSync("./commands").filter(f => f.endsWith(".js"));
+} catch (err) {
+  console.log("⚠️ Pasta commands não encontrada");
+}
 
 for (const file of commandFiles) {
   const command = require(`./commands/${file}`);
