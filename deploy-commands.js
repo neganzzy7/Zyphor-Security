@@ -1,45 +1,27 @@
 const { REST, Routes } = require("discord.js");
 const fs = require("fs");
 
-console.log("INICIANDO DEPLOY...");
-
 const commands = [];
+const commandFiles = fs.readdirSync("./commands").filter(f => f.endsWith(".js"));
 
-try {
-  const commandFiles = fs.readdirSync("./commands").filter(f => f.endsWith(".js"));
-
-  for (const file of commandFiles) {
-    const command = require(`./commands/${file}`);
-    commands.push(command.data.toJSON());
-  }
-
-  console.log("COMANDOS ENCONTRADOS:", commands.length);
-
-} catch (err) {
-  console.log("ERRO LENDO PASTA commands:", err);
+for (const file of commandFiles) {
+  const command = require(`./commands/${file}`);
+  commands.push(command.data.toJSON());
 }
 
-const token = process.env.TOKEN;
-const clientId = process.env.CLIENT_ID;
-
-if (!token || !clientId) {
-  console.log("❌ TOKEN OU CLIENT_ID FALTANDO");
-  process.exit(1);
-}
-
-const rest = new REST({ version: "10" }).setToken(token);
+const rest = new REST({ version: "10" }).setToken(process.env.TOKEN);
 
 (async () => {
   try {
-    console.log("REGISTRANDO...");
+    console.log("Registrando slash commands...");
 
     await rest.put(
-      Routes.applicationCommands(clientId),
+      Routes.applicationCommands(process.env.CLIENT_ID),
       { body: commands }
     );
 
-    console.log("✅ COMANDOS REGISTRADOS");
+    console.log("Slash commands registrados!");
   } catch (err) {
-    console.log("❌ ERRO AO REGISTRAR:", err);
+    console.error(err);
   }
 })();
