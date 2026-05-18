@@ -30,10 +30,10 @@ for (const file of commandFiles) {
 
 }
 
-client.once("ready", () => {
+client.once("clientReady", () => {
 
  console.log(
-  `✅ ${client.user.tag} online`
+  `✅ ${client.user.tag} online!`
  );
 
 });
@@ -42,7 +42,7 @@ client.on(
  "interactionCreate",
  async interaction => {
 
- if(!interaction.isChatInputCommand())
+ if (!interaction.isChatInputCommand())
  return;
 
  const command =
@@ -50,7 +50,7 @@ client.on(
   interaction.commandName
  );
 
- if(!command) return;
+ if (!command) return;
 
  try {
 
@@ -58,7 +58,7 @@ client.on(
    interaction
   );
 
- } catch(error) {
+ } catch (error) {
 
   console.error(error);
 
