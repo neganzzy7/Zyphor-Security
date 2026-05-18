@@ -1,11 +1,11 @@
+const { SlashCommandBuilder } = require("discord.js");
+
 module.exports = {
-  data: {
-    name: "setup",
-    description: "Setup do servidor",
-  },
+  data: new SlashCommandBuilder()
+    .setName("setup")
+    .setDescription("Setup do servidor"),
 
   async execute(interaction) {
-    console.log("SETUP RODOU");
     await interaction.reply("✅ Setup funcionando!");
   },
 };
