@@ -1,3 +1,4 @@
+console.log("TESTE ZYPHOR");
 const { REST, Routes } = require("discord.js");
 const fs = require("fs");
 
